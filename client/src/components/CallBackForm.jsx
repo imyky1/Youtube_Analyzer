@@ -15,7 +15,7 @@ const CallbackForm = ({ handleClose }) => {
     }
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:3000/requestCallback', {
+      const response = await axios.post('https://anchor-39r7.onrender.com/requestCallback', {
         name,
         contactNumber,
       });

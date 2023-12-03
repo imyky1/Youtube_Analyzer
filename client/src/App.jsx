@@ -41,7 +41,7 @@ const App = () => {
       }
       setVideoData(videoDetails);
     try {
-      await axios.post('http://localhost:3000/submitVideo', {
+      await axios.post('https://anchor-39r7.onrender.com/submitVideo', {
         title: videoDetails.snippet.title,
         url: videoDetails.snippet.thumbnails.medium.url,
         likes: parseInt(videoDetails.statistics.likeCount, 10),
