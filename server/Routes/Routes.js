@@ -59,7 +59,7 @@ router.post("/requestCallback", async (req, res) => {
 
     const mailOptions = {
       from: "yash.20465@knit.ac.in",
-      to: "yash.kumaryadav.1610@gmail.com",
+      to: "ravi@anchors.in",
       subject: "New Callback Request",
       html: `
         <p>Name: ${name}</p>
