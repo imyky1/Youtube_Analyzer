@@ -1,0 +1,176 @@
+body{
+  width: 100vw;
+}
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: black;
+}
+.main{
+  display:flex;
+  flex-Direction:column;
+  justify-Content:center;
+  align-Items:center;
+  margin-top: 100px;
+}
+
+.videoFormInput{
+  display: flex;
+  border: 0.1px solid white;
+  background-color: black;
+  width: 535px;
+  height: 48px;
+  padding: 12px, 39px, 12px, 39px;
+  border-radius: 10000px;
+  gap: 10px
+}
+
+.videoFormInput input{
+  width: 535px;
+  border-radius: 10000px;
+  border: none;
+  outline: none;
+  background-color: #000000;
+}
+.videoForm button{
+  margin-left: 10px;
+  background-color: red;
+  border: 1px solid red;
+  color: black;
+  width: 158px;
+  height: 48px;
+  padding: 18px, 24px, 18px, 24px;
+  border-radius: 10000px;
+  cursor: pointer;
+}
+.result{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  height: Hug (266px);
+  padding: 20px 40px 20px 40px;
+  border-radius: 16px;
+  gap: 20px
+}
+.thumbnail{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  
+}
+.batch{
+  display: flex;
+  background-color: #707070;
+  padding: 4px 8px 4px 8px;
+  border-radius: 4px;
+}
+.image img{
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: cover; /* To maintain aspect ratio */
+  margin: 10px 0;
+}
+.statics{
+  /* margin-left: 20px; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  text-align: start;
+}
+.description ul{
+  padding: 0%;
+  margin: 0%;
+}
+.description ul li{
+  display: flex;
+  list-style-type: none;
+}
+.earning{
+  /* margin-left:20px; */
+  width: 30%;
+  height: 200px;
+  padding: 40px 20px 40px 20px;
+  border-radius: 16px;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.earning button{
+  background-color: white;
+  padding: 18px 24px 18px 24px;
+  border-radius: 35px;
+  border: none;
+  color: black;
+  cursor: pointer;
+}
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999; /* Set a higher z-index to ensure it's on top */
+}
+
+.popupContent{
+  background: #282828;
+  padding: 40px;
+  border-radius: 10px;
+  box-Shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.popupContent h6{
+  font-weight: 400;
+  margin: 10px;
+}
+.popupContent button{
+  width: 225px;
+  height: 40px;
+  padding: 12px 40px 12px 40px;
+  border-radius: 40px;
+  gap: 4px;
+  background-color: #FF0000;
+  border: 1px solid #FF0000;
+  box-shadow: 0px 4px 8px 0px #1F1F1F26;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.popupForm{
+  display: flex;
+  flex-direction: column;
+}
+.popupForm input{
+  padding: 15px 20px 15px 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  border: 1px;
+  gap: 10px;
+  border: 1px solid #707070;
+  color: #707070;
+  background-color: #282828;
+}
+.popupForm button{
+  background: #FFFFFF;
+  box-shadow: 0px 4px 8px 0px #1F1F1F1A;
+  padding: 12px 40px 12px 40px;
+  border-radius: 40px;
+  cursor: pointer;
+  border: 1px solid white;
+  gap: 10px;
+  color: #000000;
+}
