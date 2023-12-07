@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import VideoForm from './components/VideoForm';
 import Loader from './components/Loader';
 import ResultPage from './components/ResultPage';
-import Header from './components/header';
+import Header from './components/Header';
 import axios from 'axios';
 
 const App = () => {
@@ -13,6 +13,7 @@ const App = () => {
   const [showCallbackForm, setShowCallbackForm] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [progress, setProgress] = useState(0); // Track progress from 0 to 100
+  const [error, setError] = useState(false);
 
   const extractVideoId = (url) => {
     const videoId = url.split('v=')[1];
@@ -33,27 +34,20 @@ const App = () => {
     const videoId = extractVideoId(videoLink);
     try {
       const response = await axios.get(
-        `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet,statistics&key=AIzaSyAR008A8Tmswi0WY81aMz9N4F96E14QlNM`
+        `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&part=snippet,statistics&key=${import.meta.env.VITE_API_KEY}`
       );
       const videoDetails = response.data.items[0];
+      // console.log(videoDetails)
       if(!videoDetails){
-        return alert("No video found")
+        setError(true)
+      }
+      if(Object.keys(videoDetails).length>0){
+        setShowResult(true);
       }
       setVideoData(videoDetails);
-    try {
-      await axios.post('https://anchor-39r7.onrender.com/submitVideo', {
-        title: videoDetails.snippet.title,
-        url: videoDetails.snippet.thumbnails.medium.url,
-        likes: parseInt(videoDetails.statistics.likeCount, 10),
-        comments: parseInt(videoDetails.statistics.commentCount, 10),
-        views: parseInt(videoDetails.statistics.viewCount, 10),
-      });
-    } catch (error) {
-      console.error('Error saving video data:', error.message);
-    }
+      
     } catch (error) {
       console.error('Error fetching video data:', error.message);
-      return alert("Video not found")
     }
   };
 
@@ -68,10 +62,7 @@ const App = () => {
     setProgress(0); // Reset progress
     await fetchVideoData();
     setLoading(false);
-    console.log(videoData)
-    if(videoData){
-      setShowResult(true);
-    }
+    // console.log(Object.keys(videoData))
   };
 
   useEffect(() => {
@@ -89,13 +80,13 @@ const App = () => {
 
   return (
     <>
-    <Header />
+    <Header videoData={videoData} />
     <div className='main'>
       {!showResult && !showCallbackForm && !showSuccessMessage && (
-        <VideoForm onSubmit={handleVideoSubmit} onChange={onChange} value={videoLink}/>
+        <VideoForm onSubmit={handleVideoSubmit} onChange={onChange} value={videoLink} apierror={error}/>
       )}
       {loading && <Loader percentage={progress} />}
-      {showResult && <ResultPage videoData={videoData} />}
+      {showResult && !error && <ResultPage videoData={videoData} />}
     </div>
     </>
   );

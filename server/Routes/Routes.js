@@ -6,33 +6,33 @@ const nodemailer = require("nodemailer");
 
 // Handle video submission and analysis
 
-router.get("video",async(req,res)=>{})
-router.post("/submitVideo", async (req, res) => {
-  // Fetch data from request body
-  const { title, url, likes, comments, views } = req.body;
+// router.get("video",async(req,res)=>{})
+// router.post("/submitVideo", async (req, res) => {
+//   // Fetch data from request body
+//   const { title, url, likes, comments, views } = req.body;
 
-  // Calculate earnings (replace this with your specific formula)
-  const calculatedEarnings =
-     views + 10 * comments + 5 * likes;
+//   // Calculate earnings (replace this with your specific formula)
+//   const calculatedEarnings =
+//      views + 10 * comments + 5 * likes;
 
-  try {
-    const newVideo = new Video({
-      title,
-      url,
-      likes,
-      comments,
-      views,
-      calculatedEarnings,
-    });
+//   try {
+//     const newVideo = new Video({
+//       title,
+//       url,
+//       likes,
+//       comments,
+//       views,
+//       calculatedEarnings,
+//     });
 
-    // Save video data to MongoDB
-    await newVideo.save();
+//     // Save video data to MongoDB
+//     await newVideo.save();
 
-    res.status(200).json({ message: "Video analysis completed successfully" });
-  } catch (err) {
-    res.status(500).json({ error: "Error analyzing video" });
-  }
-});
+//     res.status(200).json({ message: "Video analysis completed successfully" });
+//   } catch (err) {
+//     res.status(500).json({ error: "Error analyzing video" });
+//   }
+// });
 
 // Handle callback requests
 router.post("/requestCallback", async (req, res) => {
@@ -59,7 +59,7 @@ router.post("/requestCallback", async (req, res) => {
 
     const mailOptions = {
       from: "yash.20465@knit.ac.in",
-      to: "ravi@anchors.in",
+      to: "yash.kumaryadav.1610@gmail.com",
       subject: "New Callback Request",
       html: `
         <p>Name: ${name}</p>

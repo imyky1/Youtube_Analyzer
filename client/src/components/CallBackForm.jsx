@@ -7,20 +7,22 @@ const CallbackForm = ({ handleClose }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0); // Track progress from 0 to 100
+  const [error, setError] = useState(false);
   const handleSubmit = async(e) => {
     
     e.preventDefault();
     if(name == '' || contactNumber == ''){
-      return alert("Name and contact cannot be empty")
+     return setError(true)
     }
     try {
+      setError(false)
       setLoading(true);
-      const response = await axios.post('https://anchor-39r7.onrender.com/requestCallback', {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}requestCallback`, {
         name,
         contactNumber,
       });
 
-      console.log(response.data); // Check the response
+      // console.log(response.data); 
       setSubmitted(true);
       setLoading(false);
     } catch (error) {
@@ -49,7 +51,7 @@ const CallbackForm = ({ handleClose }) => {
           <h6>Our Team will call you shortly in 12-24 hrs</h6>
           <h6>Can’t you wait for call?</h6>
           <button onClick={handleClose}>Close</button>
-          <button onClick={handleClose}>check another video →</button>
+          <a href="/"><button onClick={handleClose}>check another video →</button></a>
         </div>
       </div>
     );
@@ -63,15 +65,20 @@ const CallbackForm = ({ handleClose }) => {
           <input
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => {
+              setName(e.target.value)
+              setError(false)}}
             placeholder="Name"
           />
+          {error && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100'  }}>× Please Enter Name</p>}
           <input
             type="text"
             value={contactNumber}
-            onChange={(e) => setContactNumber(e.target.value)}
+            onChange={(e) => {setContactNumber(e.target.value)
+              setError(false)}}
             placeholder="Contact Number"
           />
+          {error && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100'  }}>× Please enter Contact Number</p>}
           <button type="submit">Request a call Back</button>
           <button onClick={handleClose}>Close</button>
         </form>

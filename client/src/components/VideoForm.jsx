@@ -1,37 +1,47 @@
-import React from 'react';
+import React, { useState,useEffect } from 'react';
 
-const VideoForm = ({ onSubmit, value, onChange }) => {
+const VideoForm = ({ onSubmit, value, onChange,apierror }) => {
+  const [error, setError] = useState(false);
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Basic validation - check if value (videoLink) is not empty
-    if (value.trim() !== '') {
+    // Regular expression to match YouTube video URLs
+    const youtubeRegex = /^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube(-nocookie)?\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|live\/|v\/)?)([\w\-]+)(\S+)?$/
+    
+    if (value.trim() !== '' && youtubeRegex.test(value)) {
       onSubmit();
+      setError(false);
     } else {
-      // You can handle validation errors or display a message to the user
-      alert('Please enter a valid YouTube video link');
+      setError(true);
     }
   };
 
   const handleChange = (event) => {
     onChange(event.target.value);
+    setError(false);
   };
+  useEffect(() => {
+    setError(apierror); // Update error state based on the apierror prop
+  }, [apierror]);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', maxWidth: '80%' }}>
       <h1>Discover Your Earning Potential</h1>
       <h3 style={{ fontWeight: 300 }}>Turn your Youtube expertise into a lucrative income through resource sharing</h3>
       <form style={{ display: 'flex' }} className="videoForm" onSubmit={handleSubmit}>
         <div className="videoFormInput">
           <img src="/youtube.svg" alt="" />
-        <input
-          type="text"
-          value={value}
-          onChange={handleChange}
-          placeholder="Enter Youtube video link"
-        />
+          <input
+            type="text"
+            value={value}
+            onChange={handleChange}
+            placeholder="Enter Youtube video link"
+            className={error ? 'error' : ''}
+          />
         </div>
         <button type="submit">Analyze Video</button>
       </form>
+      {error && <p style={{ color: 'red' }}>× Please enter a valid YouTube video link</p>}
     </div>
   );
 };
