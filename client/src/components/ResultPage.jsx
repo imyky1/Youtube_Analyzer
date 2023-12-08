@@ -11,46 +11,99 @@ const ResultPage = (props) => {
   const date = new Date(originalDateString);
   const options = { year: 'numeric', month: 'short', day: 'numeric' };
   const formattedDate = date.toLocaleDateString('en-US', options);
+  
+  const [videosInCategory, setVideosInCategory] = useState([]);
+  const [subscribers, setSubscribers] = useState(null);
 
+
+  const getSubscribersCount = async(channelId)=>{
+    try {
+      const channelResponse = await axios.get(
+        `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${channelId}&key=${import.meta.env.VITE_API_KEY}`
+      );
+      const subscriberCount =parseInt(channelResponse.data.items[0].statistics.subscriberCount);
+      return subscriberCount;
+    } catch (error) {
+      console.error('Error fetching subscriber count:', error);
+      return null;
+    }
+  }
   const viewCount = parseInt(videoData.statistics.viewCount, 10); // Convert string to integer
   const commentCount = parseInt(videoData.statistics.commentCount, 10); // Convert string to integer
   const likeCount = parseInt(videoData.statistics.likeCount, 10); // Convert string to integer
-  const earning = viewCount + 10 * commentCount + 5 * likeCount;
-  const [videosInCategory, setVideosInCategory] = useState([]);
+  const earning = Math.min(viewCount,subscribers) + 10 * commentCount + 5 * likeCount;
 
-  const getVideosInCategory = async (categoryId) => {
-    try {
-      const response = await axios.get(
-        `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=10&regionCode=US&videoCategoryId=${videoData.snippet.categoryId}&key=${import.meta.env.VITE_API_KEY}`
-      );
-      // console.log(response)
-      const videos = response.data.items.map(item => ({
-        title: item.snippet.title.length > 50 ? `${item.snippet.title.substring(0, 20)}...` : item.snippet.title,
-        url:item.snippet.thumbnails.medium.url,
-        videoId: item.id,
-        views : item.statistics.viewCount,
-        likes:item.statistics.likeCount,
-        comment:item.statistics.commentCount,
-        date:new Date(item.snippet.publishedAt).toLocaleDateString('en-US', options)
-      }));
-      // Sort videos based on views
-    const sortedVideos = videos.slice().sort((a, b) => b.views - a.views);
-
-    // Assign ranks
-    const rankedVideos = sortedVideos.map((video, index) => ({
-      ...video,
-      rank: index + 1 ,// Assign ranks starting from 1
-      earning:parseInt(video.views) + 10*parseInt(video.likes) + 5*parseInt(video.comment)
-    }));
-      setVideosInCategory(rankedVideos);
-    } catch (error) {
-      console.error('Error fetching videos in category:', error);
-    }
-  };
   useEffect(() => {
-    // Fetch videos in the same category when the component mounts
-    getVideosInCategory();
-  }, []); 
+    const fetchData = async () => {
+      // Fetch subscriber count
+      const subscriberCount = await getSubscribersCount(videoData.snippet.channelId);
+      setSubscribers(subscriberCount);
+
+      try {
+        const response = await axios.get(
+          `https://youtube.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&maxResults=10&regionCode=in&videoCategoryId=${videoData.snippet.categoryId}&key=${import.meta.env.VITE_API_KEY}`
+        );
+  
+        const videos = response.data.items.map(async (item) => {
+          const title =
+            item.snippet.title.length > 50
+              ? `${item.snippet.title.substring(0, 20)}...`
+              : item.snippet.title;
+  
+          const date = new Date(item.snippet.publishedAt).toLocaleDateString(
+            'en-US',
+            options
+          );
+  
+          const [views, likes, comment] = [
+            item.statistics.viewCount || NaN,
+            item.statistics.likeCount || NaN,
+            item.statistics.commentCount || NaN,
+          ];
+  
+          const channelId = item.snippet.channelId;
+  
+          const [subscriberCount, videoInfo] = await Promise.all([
+            getSubscribersCount(channelId),
+            Promise.resolve({
+              title,
+              url: item.snippet.thumbnails.medium.url,
+              videoId: item.id,
+              views,
+              likes,
+              comment,
+              date,
+            }),
+          ]);
+  
+          const earning =
+            Math.min(videoInfo.views, subscriberCount) +
+            10 * parseInt(videoInfo.likes) +
+            5 * parseInt(videoInfo.comment);
+  
+          return {
+            ...videoInfo,
+            subscriber: subscriberCount,
+            earning,
+          };
+        });
+  
+        const rankedVideos = (await Promise.all(videos))
+          .slice()
+          .sort((a, b) => b.views - a.views)
+          .map((video, index) => ({
+            ...video,
+            rank: index + 1,
+          }));
+  
+        setVideosInCategory(rankedVideos);
+      } catch (error) {
+        console.error('Error fetching videos in category:', error);
+      }
+    };
+  
+    fetchData();
+  }, [videoData.snippet.channelId,videoData.snippet.categoryId]);
 
   return (
     <>
@@ -116,7 +169,7 @@ const ResultPage = (props) => {
         </div>
       )}
           {videosInCategory.map(video => (
-            <div className="column">
+            <div key={video.rank} className="column">
               <div >{video.rank}</div>
               <div >{video.title}</div>
               <div><img src={video.url} alt="" /></div>

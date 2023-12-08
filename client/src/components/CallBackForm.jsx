@@ -7,12 +7,16 @@ const CallbackForm = ({ handleClose }) => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0); // Track progress from 0 to 100
-  const [error, setError] = useState(false);
+  const [Nameerror, setNameError] = useState(false);
+  const [Contacterror, setContactError] = useState(false);
   const handleSubmit = async(e) => {
     
     e.preventDefault();
-    if(name == '' || contactNumber == ''){
-     return setError(true)
+    if(name == ''){
+     return setNameError(true)
+    }
+    if( contactNumber == ''){
+     return setContactError(true)
     }
     try {
       setError(false)
@@ -67,18 +71,18 @@ const CallbackForm = ({ handleClose }) => {
             value={name}
             onChange={(e) => {
               setName(e.target.value)
-              setError(false)}}
+              setNameError(false)}}
             placeholder="Name"
           />
-          {error && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100'  }}>× Please Enter Name</p>}
+          {Nameerror && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100',fontSize:'12px'  }}>× Please Enter Name</p>}
           <input
             type="text"
             value={contactNumber}
             onChange={(e) => {setContactNumber(e.target.value)
-              setError(false)}}
+              setContactError(false)}}
             placeholder="Contact Number"
           />
-          {error && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100'  }}>× Please enter Contact Number</p>}
+          {Contacterror && <p style={{ color: 'red',margin:'0 0 10px 0',display:'flex',fontWeight:'100' ,fontSize:'12px'  }}>× Please enter Contact Number</p>}
           <button type="submit">Request a call Back</button>
           <button onClick={handleClose}>Close</button>
         </form>
